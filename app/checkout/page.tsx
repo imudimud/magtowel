@@ -13,32 +13,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/hooks/use-toast"
-
-// Mock cart data
-// In a real implementation, this would come from a cart state management system
-const cartItems = [
-  {
-    id: 1,
-    name: "Classic MagTowel",
-    price: 29.99,
-    image: "/placeholder.svg?height=100&width=100",
-    color: "Blue",
-    size: "Medium",
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: "Premium MagTowel",
-    price: 39.99,
-    image: "/placeholder.svg?height=100&width=100",
-    color: "Black",
-    size: "Large",
-    quantity: 2,
-  },
-]
+import { useCartStore } from "@/lib/store"
 
 export default function CheckoutPage() {
   const { toast } = useToast()
+  const cartItems = useCartStore((state) => state.items)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -64,14 +43,39 @@ export default function CheckoutPage() {
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // In a real implementation, this would submit the order to a backend API
-    toast({
-      title: "Order placed successfully!",
-      description: "Thank you for your order. We'll contact you shortly to confirm.",
-    })
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: cartItems,
+          shipping: formData,
+          paymentMethod: 'cash',
+        }),
+      })
+
+      if (res.ok) {
+        toast({
+          title: 'Order placed successfully!',
+          description: "Thank you for your order. We'll contact you shortly to confirm.",
+        })
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Failed to place order.',
+          variant: 'destructive',
+        })
+      }
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: 'Failed to place order.',
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
