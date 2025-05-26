@@ -3,9 +3,9 @@ import { Inter, Montserrat } from "next/font/google"
 import type { Metadata } from "next"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
+
 import { Toaster } from "@/components/ui/toaster"
 import { SearchProvider } from "@/lib/search-context"
 import { SessionProvider } from "next-auth/react"
@@ -35,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
       <body className="font-sans">
+
         <SessionProvider>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
             <SearchProvider>
