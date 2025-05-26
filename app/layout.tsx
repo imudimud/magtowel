@@ -7,6 +7,7 @@ import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
 import Providers from "@/components/providers"
 
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -32,13 +33,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
       <body className="font-sans">
-        <Providers>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <div className="flex-1">{children}</div>
-            <Footer />
-          </div>
-        </Providers>
+
+        <SessionProvider>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+            <SearchProvider>
+              <div className="flex min-h-screen flex-col">
+                <Header />
+                <div className="flex-1">{children}</div>
+                <Footer />
+                <Toaster />
+              </div>
+            </SearchProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   )
