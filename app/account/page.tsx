@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { useWishlistStore } from "@/lib/wishlist-store"
+import type { Order } from "@/lib/order"
 
 export default function AccountPage() {
   const { toast } = useToast()
@@ -42,52 +43,23 @@ export default function AccountPage() {
     }
   }, [])
 
-  // Mock order data
-  const orders = [
-    {
-      id: "ORD-2023-1234",
-      date: "May 15, 2023",
-      status: "Delivered",
-      total: 69.98,
-      items: [
-        {
-          id: 1,
-          name: "Classic MagTowel",
-          color: "Blue",
-          size: "Medium",
-          price: 29.99,
-          quantity: 1,
-          image: "/placeholder.svg?height=80&width=80",
-        },
-        {
-          id: 2,
-          name: "Premium MagTowel",
-          color: "Black",
-          size: "Large",
-          price: 39.99,
-          quantity: 1,
-          image: "/placeholder.svg?height=80&width=80",
-        },
-      ],
-    },
-    {
-      id: "ORD-2023-0987",
-      date: "April 2, 2023",
-      status: "Delivered",
-      total: 29.99,
-      items: [
-        {
-          id: 1,
-          name: "Classic MagTowel",
-          color: "Gray",
-          size: "Small",
-          price: 29.99,
-          quantity: 1,
-          image: "/placeholder.svg?height=80&width=80",
-        },
-      ],
-    },
-  ]
+  const [orders, setOrders] = useState<Order[]>([])
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch('/api/orders')
+        if (res.ok) {
+          const data = await res.json()
+          setOrders(data)
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    fetchOrders()
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
