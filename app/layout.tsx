@@ -3,11 +3,9 @@ import { Inter, Montserrat } from "next/font/google"
 import type { Metadata } from "next"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
-import { Toaster } from "@/components/ui/toaster"
-import { SearchProvider } from "@/lib/search-context"
+import Providers from "@/components/providers"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,16 +32,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
       <body className="font-sans">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <SearchProvider>
-            <div className="flex min-h-screen flex-col">
-              <Header />
-              <div className="flex-1">{children}</div>
-              <Footer />
-              <Toaster />
-            </div>
-          </SearchProvider>
-        </ThemeProvider>
+        <Providers>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   )
