@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Menu, ShoppingCart, Search, User, Heart } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose, SheetTrigger } from "@/components/ui/sheet"
@@ -18,6 +19,7 @@ import { useSearch } from "@/lib/search-context"
 export default function Header() {
   const pathname = usePathname()
   const isMobile = useMobile()
+  const { data: session } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const cartItems = useCartStore((state) => state.items)
   const wishlistItems = useWishlistStore((state) => state.items)
@@ -107,7 +109,7 @@ export default function Header() {
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
             </Button>
-            <Link href="/account">
+            <Link href={session ? "/account" : "/login"} className="flex items-center space-x-2">
               <Button
                 variant="ghost"
                 size="icon"
@@ -116,6 +118,9 @@ export default function Header() {
                 <User className="h-5 w-5" />
                 <span className="sr-only">Account</span>
               </Button>
+              {session?.user?.name && (
+                <span className="hidden text-sm font-medium md:block">{session.user.name}</span>
+              )}
             </Link>
             <Link href="/wishlist" className="relative">
               <Button
@@ -217,11 +222,11 @@ export default function Header() {
                     </div>
                     <SheetClose asChild>
                       <Link
-                        href="/account"
+                        href={session ? "/account" : "/login"}
                         className="flex items-center py-2 text-base font-medium text-secondary transition-colors hover:text-[#3B7A8B]"
                       >
                         <User className="mr-3 h-5 w-5" />
-                        <span>Account</span>
+                        <span>{session?.user?.name ?? 'Account'}</span>
                       </Link>
                     </SheetClose>
                     <SheetClose asChild>
